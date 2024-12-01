@@ -1,5 +1,6 @@
 import adventofcode2023.day1.parseInput
 import adventofcode2023.day1.puzzle1
+import adventofcode2023.day1.puzzle2
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -26,5 +27,13 @@ class Day1Tests {
         val (left, right) = parseInput(testInput.lines())
 
         assertThat(puzzle1(left, right)).isEqualTo(11)
+    }
+
+
+    @Test
+    fun testPuzzle2() {
+        val (left, right) = parseInput(testInput.lines())
+
+        assertThat(puzzle2(left, right)).isEqualTo(31)
     }
 }

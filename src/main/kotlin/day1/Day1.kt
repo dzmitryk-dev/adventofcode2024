@@ -14,6 +14,12 @@ fun main() {
         puzzle1(left, right)
     }
     println("Puzzle 1 output: $output. Done in ${duration.inWholeMilliseconds} ms" )
+
+    println("Puzzle 2 started")
+    val (output2, duration2) = measureTimedValue {
+        puzzle2(left, right)
+    }
+    println("Puzzle 2 output: $output2. Done in ${duration2.inWholeMilliseconds} ms" )
 }
 
 internal fun parseInput(input: List<String>): Pair<IntArray, IntArray> =
@@ -41,4 +47,10 @@ internal fun puzzle1(left: IntArray, right: IntArray): Int {
         totalDistance += distance
     }
     return totalDistance
+}
+
+internal fun puzzle2(left: IntArray, right: IntArray): Int {
+    return left.sumOf { v ->
+        v * right.count { it == v }
+    }
 }
