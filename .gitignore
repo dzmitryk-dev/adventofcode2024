@@ -44,3 +44,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Exlude resources because of Advent of Code license ###
+/src/main/resources/
