@@ -15,6 +15,12 @@ fun main() {
         puzzle1(parsedInput)
     }
     println("Puzzle 1 output: $output. Done in ${duration.inWholeMilliseconds} ms" )
+
+    println("Puzzle 2 started")
+    val (output2, duration2) = measureTimedValue {
+        puzzle2(parsedInput)
+    }
+    println("Puzzle 2 output: $output2. Done in ${duration2.inWholeMilliseconds} ms" )
 }
 
 internal fun parseInput(input: List<String>): Collection<List<Int>> =
@@ -37,4 +43,25 @@ internal fun isSafe(rules: List<Int>): Boolean {
 
 internal fun puzzle1(input: Collection<List<Int>>): Int {
     return input.map { r -> isSafe(r) }.count { it }
+}
+
+internal fun isSafe2Dump(rules: List<Int>): Boolean {
+    val result = isSafe(rules)
+    if (result) {
+        return true
+    }
+    repeat(rules.size) { attempt ->
+        val newRules = rules.toMutableList().apply {
+            removeAt(attempt)
+        }
+        val dampeneredResult = isSafe(newRules)
+        if (dampeneredResult) {
+            return true
+        }
+    }
+    return false
+}
+
+internal fun puzzle2(input: Collection<List<Int>>): Int {
+    return input.map { r -> isSafe2Dump(r) }.count { it }
 }

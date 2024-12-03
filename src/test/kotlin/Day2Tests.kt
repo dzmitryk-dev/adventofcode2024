@@ -1,3 +1,4 @@
+import adventofcode2023.day2.*
 import adventofcode2023.day2.isSafe
 import adventofcode2023.day2.parseInput
 import adventofcode2023.day2.puzzle1
@@ -47,6 +48,21 @@ class Day2Tests {
         assertThat(result).isEqualTo(2)
     }
 
+    @ParameterizedTest
+    @MethodSource("isSafe2TestCases")
+    fun testIsSafe2(testCase: SafeTestCase) {
+        assertThat(isSafe2Dump(testCase.input)).isEqualTo(testCase.expected)
+    }
+
+    @Test
+    fun testPuzzle2() {
+        val input = parseInput(testInput.lines())
+
+        val result = puzzle2(input)
+
+        assertThat(result).isEqualTo(4)
+    }
+
     companion object {
 
         data class SafeTestCase(
@@ -87,6 +103,42 @@ class Day2Tests {
             SafeTestCase(
                 input = listOf(2, 5, 6, 8, 6),
                 expected = false
+            ),
+        )
+
+        @JvmStatic
+        fun isSafe2TestCases(): Stream<SafeTestCase> = Stream.of(
+            SafeTestCase(
+                input = listOf(7, 6, 4, 2, 1),
+                expected = true
+            ),
+            SafeTestCase(
+                input = listOf(1, 2, 7, 8, 9),
+                expected = false
+            ),
+            SafeTestCase(
+                input = listOf(9, 7, 6, 2, 1),
+                expected = false
+            ),
+            SafeTestCase(
+                input = listOf(1, 3, 2, 4, 5),
+                expected = true
+            ),
+            SafeTestCase(
+                input = listOf(8, 6, 4, 4, 1),
+                expected = true
+            ),
+            SafeTestCase(
+                input = listOf(1, 3, 6, 7, 9),
+                expected = true
+            ),
+            SafeTestCase(
+                input = listOf(9, 7, 6, 3, 1),
+                expected = true
+            ),
+            SafeTestCase(
+                input = listOf(2, 5, 6, 8, 6),
+                expected = true
             ),
         )
     }
