@@ -14,6 +14,12 @@ fun main() {
        findXMAS(input)
     }
     println("Puzzle 1 output: $output. Done in ${duration.inWholeMilliseconds} ms")
+
+    println("Puzzle 2")
+    val (output2, duration2) =  measureTimedValue {
+        findMASX(input)
+    }
+    println("Puzzle 2 output: $output2. Done in ${duration2.inWholeMilliseconds} ms")
 }
 
 fun parseInput(input: List<String>): List<CharArray> {
@@ -58,6 +64,41 @@ fun findXMAS(input: List<CharArray>): Int {
             if(findNextSymbol(input, point, direction, "MAS")) {
                 count++
             }
+        }
+    }
+    return count
+}
+
+fun findA(input: List<CharArray>): List<Point> {
+    return buildList {
+        input.forEachIndexed { lineIndex, line ->
+            line.forEachIndexed { charIndex, char ->
+                if (char == 'A')
+                    add(Point(lineIndex, charIndex))
+            }
+        }
+    }
+}
+
+fun findMASX(input: List<CharArray>): Int {
+    val letters = listOf('M', 'S')
+    var count = 0
+    findA(input).forEach { point ->
+        val result = try {
+            val d1 = setOf(
+                input[point.first - 1][point.second - 1],
+                input[point.first + 1][point.second + 1]
+            )
+            val d2 = setOf(
+                input[point.first - 1][point.second + 1],
+                input[point.first + 1][point.second - 1]
+            )
+            d1.containsAll(letters) && d2.containsAll(letters)
+        } catch (ex: IndexOutOfBoundsException) {
+            false
+        }
+        if (result) {
+            count++
         }
     }
     return count

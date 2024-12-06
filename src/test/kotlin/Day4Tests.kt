@@ -1,3 +1,4 @@
+import adventofcode2023.day4.findMASX
 import adventofcode2023.day4.findXMAS
 import adventofcode2023.day4.parseInput
 import org.assertj.core.api.Assertions.assertThat
@@ -39,6 +40,19 @@ class Day4Tests {
         MXMXAXMASX
     """.trimIndent()
 
+    val testInput4 = """
+        .M.S......
+        ..A..MSMS.
+        .M.S.MAA..
+        ..A.ASMSM.
+        .M.S.M....
+        ..........
+        S.S.S.S.S.
+        .A.A.A.A..
+        M.M.M.M.M.
+        ..........
+    """.trimIndent()
+
 
     @Test
     fun testFindXMASonInput1() {
@@ -59,5 +73,19 @@ class Day4Tests {
         val actual = findXMAS(parseInput(testInput3.lines()))
 
         assertThat(actual).isEqualTo(18)
+    }
+
+    @Test
+    fun testFindMASXonInput4() {
+        val actual = findMASX(parseInput(testInput4.lines()))
+
+        assertThat(actual).isEqualTo(9)
+    }
+
+    @Test
+    fun testFindMASXonInput3() {
+        val actual = findMASX(parseInput(testInput3.lines()))
+
+        assertThat(actual).isEqualTo(9)
     }
 }
