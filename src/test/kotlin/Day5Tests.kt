@@ -1,6 +1,4 @@
-import adventofcode2023.day5.parseInput
-import adventofcode2023.day5.puzzle1
-import adventofcode2023.day5.testUpdate
+import adventofcode2023.day5.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -118,6 +116,48 @@ class Day5Tests {
         assertThat(puzzle1(rules, updates)).isEqualTo(143)
     }
 
+    @ParameterizedTest
+    @MethodSource("testFixUpdateSource")
+    fun testFixUpdate(testCase: Pair<List<Int>, List<Int>>) {
+        val rules = listOf(
+            47 to 53,
+            97 to 13,
+            97 to 61,
+            97 to 47,
+            75 to 29,
+            61 to 13,
+            75 to 53,
+            29 to 13,
+            97 to 29,
+            53 to 29,
+            61 to 53,
+            97 to 53,
+            61 to 29,
+            47 to 13,
+            75 to 47,
+            97 to 75,
+            47 to 61,
+            75 to 61,
+            47 to 29,
+            75 to 13,
+            53 to 13
+        )
+
+        val (input, expected) = testCase
+
+        val actual = fixUpdates(rules, input)
+
+        assertThat(actual).containsExactlyElementsOf(expected)
+            .withFailMessage { "Expected $expected but got $actual" }
+    }
+
+
+    @Test
+    fun testPuzzle2() {
+        val (rules, updates) = parseInput(testInput.lines())
+        assertThat(puzzle2(rules, updates)).isEqualTo(123)
+    }
+
     companion object {
 
         @JvmStatic
@@ -128,6 +168,13 @@ class Day5Tests {
             listOf(75,97,47,61,53) to false,
             listOf(61,13,29) to false,
             listOf(97,13,75,29,47) to false
+        )
+
+        @JvmStatic
+        fun testFixUpdateSource() = listOf(
+            listOf(75,97,47,61,53) to listOf(97,75,47,61,53),
+            listOf(61,13,29) to listOf(61,29,13),
+            listOf(97,13,75,29,47) to listOf(97,75,47,29,13)
         )
     }
 }
