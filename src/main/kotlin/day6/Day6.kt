@@ -14,6 +14,12 @@ fun main() {
         puzzle1(input)
     }
     println("Puzzle 1 output: $output. Done in ${duration.inWholeMilliseconds} ms" )
+
+    println("Puzzle 2 started")
+    val (output2, duration2) = measureTimedValue {
+        puzzle2(input)
+    }
+    println("Puzzle 2 output: $output2. Done in ${duration2.inWholeMilliseconds} ms" )
 }
 
 data class Guard(
@@ -37,9 +43,32 @@ data class Guard(
 data class Scene(
     val scene: List<CharArray>,
     val guard: Guard,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Scene) return false
+
+        val str1 = scene.joinToString { it.joinToString() }
+        val str2 = other.scene.joinToString { it.joinToString() }
+
+        if (str1 != str2) return false
+        if (guard != other.guard) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return scene.map { it.contentHashCode() }.hashCode() + guard.hashCode()
+    }
+
+    override fun toString(): String {
+        return "Field:\n${scene.joinToString("\n") { it.joinToString("") }}\nGuard: $guard"
+    }
+}
 
 fun parseScene(input: List<String>): Scene {
+//    println("Input: \n${input.joinToString("\n")}")
+//    println("----------------------------------------------------")
     return Scene(
         scene = input.map { it.toCharArray() },
         guard = Guard(
@@ -69,7 +98,7 @@ fun Guard.walk(
     return try {
         val content = field[newPoint.line][newPoint.col]
 
-        if (content == '#') {
+        if (content in setOf('#', 'O')) {
             copy(direction = direction.next())
         } else {
             copy(cord = newPoint)
@@ -99,4 +128,65 @@ fun puzzle1(input: List<String>): Int {
     val scene = parseScene(input)
     val route = calculateRoute(scene)
     return route.size
+}
+
+fun checkIsSceneLooped(scene: Scene): Boolean {
+    var guard = scene.guard
+
+    val route = mutableSetOf(guard)
+
+    do {
+        val newGuard = guard.walk(scene.scene)
+        if (newGuard!= null) {
+            if (!route.add(newGuard)) {
+                return true
+            }
+            guard = newGuard
+        }
+    } while (newGuard != null)
+
+    return false
+}
+
+fun findLoopedScenes(input: List<String>): Set<Scene> {
+    val scene = parseScene(input)
+    println("--------------------Scene-----------------------")
+    println(scene)
+    println("----------------------------------------------------")
+    val route = calculateRoute(scene)
+    println("-------------------Route----------------------------")
+    scene.scene.forEachIndexed { line, chars ->
+        chars.forEachIndexed { col, c ->
+            if (Pair(line, col) in route) {
+                print('X')
+            } else {
+                print(c)
+            }
+        }
+        println()
+    }
+    println("----------------------------------------------------")
+    val potentialObstacles = route.toList().let {
+        it.subList(fromIndex = 2, toIndex = it.size).toSet()
+    }
+    val loopedScenes = mutableSetOf<Scene>()
+    for (position in potentialObstacles) {
+        val newField = scene.scene.toMutableList().apply {
+            this[position.line] = this[position.line].toMutableList().apply {
+                this[position.col] = 'O'
+            }.toCharArray()
+        }
+        val newScene = scene.copy(scene = newField)
+        println("--------------------Candidate-----------------------")
+        println(newScene)
+        println("----------------------------------------------------")
+        if (checkIsSceneLooped(newScene)) {
+            loopedScenes.add(newScene)
+        }
+    }
+    return loopedScenes
+}
+
+fun puzzle2(input: List<String>): Int {
+    return findLoopedScenes(input).size
 }
