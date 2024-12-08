@@ -1,0 +1,99 @@
+import adventofcode2023.Point
+import adventofcode2023.day8.findAntinodes
+import adventofcode2023.day8.findSymmetricPoints
+import adventofcode2023.day8.parseInput
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
+import java.util.stream.Stream
+import kotlin.test.Test
+
+class Day8Tests {
+
+
+    @ParameterizedTest
+    @MethodSource("provideTestFields")
+    fun testFindSymmetricPoints() {
+        val field = parseInput(testInput2.lines())
+        val inputPoints = buildList {
+            field.forEachIndexed { line, chars ->
+                val col = chars.indexOf('a')
+                if (col != -1) {
+                    add(Point(line, col))
+                }
+            }
+        }
+        val expected = buildList {
+            field.forEachIndexed { line, chars ->
+                val col = chars.indexOf('#')
+                if (col != -1) {
+                    add(Point(line, col))
+                }
+            }
+        }
+
+        val result = findSymmetricPoints(inputPoints[0], inputPoints[1])
+
+        assertThat(result).containsAll(expected)
+    }
+
+    @Test
+    fun testFindAntinodes() {
+        val field = parseInput(testInput.lines())
+
+        val result = findAntinodes(field)
+
+        assertThat(result.size).isEqualTo(14)
+    }
+
+    companion object {
+
+        private val testInput = """
+            ............
+            ........0...
+            .....0......
+            .......0....
+            ....0.......
+            ......A.....
+            ............
+            ............
+            ........A...
+            .........A..
+            ............
+            ............
+        """.trimIndent()
+
+        private val testInput2 = """
+            ..........
+            ...#......
+            ..........
+            ....a.....
+            ..........
+            .....a....
+            ..........
+            ......#...
+            ..........
+            ..........
+        """.trimIndent()
+
+
+        private val testInput3 = """
+            ..........
+            ...#......
+            #.........
+            ....a.....
+            ........a.
+            .....a....
+            ..#.......
+            ......#...
+            ..........
+            ..........
+        """.trimIndent()
+
+
+        @JvmStatic
+        fun provideTestFields(): Stream<String> = Stream.of(
+            testInput2, testInput3
+        )
+    }
+}
