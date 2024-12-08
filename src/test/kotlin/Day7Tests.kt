@@ -1,6 +1,4 @@
-import adventofcode2023.day7.parseInput
-import adventofcode2023.day7.puzzle1
-import adventofcode2023.day7.tryFindSolution
+import adventofcode2023.day7.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -54,6 +52,21 @@ class Day7Tests {
         assertThat(result).isEqualTo(3749L)
     }
 
+    @ParameterizedTest
+    @MethodSource("findSolutionSource2")
+    fun testTryFindSolution2(testCase: TestCase) {
+        val result = tryFindSolution2(testCase.result, testCase.numbers)
+
+        assertThat(result).isEqualTo(testCase.expected)
+    }
+
+    @Test
+    fun testPuzzle2() {
+        val result = puzzle2(parseInput(testInput.lines()))
+
+        assertThat(result).isEqualTo(11387)
+    }
+
     companion object {
         data class TestCase(
             val result: Long,
@@ -70,6 +83,19 @@ class Day7Tests {
             TestCase(7290L, listOf(6L, 8L, 6L, 15L), false),
             TestCase(161011L, listOf(16L, 10L, 13L), false),
             TestCase(192L, listOf(17L, 8L, 14L), false),
+            TestCase(21037L, listOf(9L, 7L, 18L, 13L), false),
+            TestCase(292L, listOf(11L, 6L, 16L, 20L), true),
+        )
+
+        @JvmStatic
+        fun findSolutionSource2() = listOf(
+            TestCase(190L, listOf(10L, 19L), true),
+            TestCase(3267L, listOf(81L, 40L, 27L), true),
+            TestCase(83L, listOf(17L, 5L), false),
+            TestCase(156L, listOf(15L, 6L), true),
+            TestCase(7290L, listOf(6L, 8L, 6L, 15L), true),
+            TestCase(161011L, listOf(16L, 10L, 13L), false),
+            TestCase(192L, listOf(17L, 8L, 14L), true),
             TestCase(21037L, listOf(9L, 7L, 18L, 13L), false),
             TestCase(292L, listOf(11L, 6L, 16L, 20L), true),
         )
