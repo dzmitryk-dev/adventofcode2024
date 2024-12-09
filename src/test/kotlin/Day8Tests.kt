@@ -1,7 +1,5 @@
 import adventofcode2023.Point
-import adventofcode2023.day8.findAntinodes
-import adventofcode2023.day8.findSymmetricPoints
-import adventofcode2023.day8.parseInput
+import adventofcode2023.day8.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -46,6 +44,24 @@ class Day8Tests {
         assertThat(result.size).isEqualTo(14)
     }
 
+    @Test
+    fun testFindSymmetricPointsInRegion() {
+        val field = parseInput(testInput4.replace('#', '.').lines())
+
+        val result = findAntinodesInRegion(field)
+
+        assertThat(result.size).isEqualTo(9)
+    }
+
+    @Test
+    fun testFindSymmetricPointsInRegion2() {
+        val field = parseInput(testInput.lines())
+
+        val result = findAntinodesInRegion(field)
+
+        assertThat(result.size).isEqualTo(34)
+    }
+
     companion object {
 
         private val testInput = """
@@ -87,6 +103,19 @@ class Day8Tests {
             ..#.......
             ......#...
             ..........
+            ..........
+        """.trimIndent()
+
+        private val testInput4 = """
+            T....#....
+            ...T......
+            .T....#...
+            .........#
+            ..#.......
+            ..........
+            ...#......
+            ..........
+            ....#.....
             ..........
         """.trimIndent()
 
