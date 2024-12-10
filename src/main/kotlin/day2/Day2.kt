@@ -1,6 +1,6 @@
-package adventofcode2023.day2
+package adventofcode2024.day2
 
-import adventofcode2023.readInput
+import adventofcode2024.readInput
 import kotlin.math.abs
 import kotlin.math.sign
 import kotlin.time.measureTimedValue

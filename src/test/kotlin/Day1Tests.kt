@@ -1,6 +1,6 @@
-import adventofcode2023.day1.parseInput
-import adventofcode2023.day1.puzzle1
-import adventofcode2023.day1.puzzle2
+import adventofcode2024.day1.parseInput
+import adventofcode2024.day1.puzzle1
+import adventofcode2024.day1.puzzle2
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

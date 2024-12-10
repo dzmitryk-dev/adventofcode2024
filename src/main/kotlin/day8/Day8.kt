@@ -1,9 +1,9 @@
-package adventofcode2023.day8
+package adventofcode2024.day8
 
-import adventofcode2023.Point
-import adventofcode2023.col
-import adventofcode2023.line
-import adventofcode2023.readInput
+import adventofcode2024.Point
+import adventofcode2024.col
+import adventofcode2024.line
+import adventofcode2024.readInput
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.roundToInt

@@ -1,6 +1,6 @@
-import adventofcode2023.day4.findMASX
-import adventofcode2023.day4.findXMAS
-import adventofcode2023.day4.parseInput
+import adventofcode2024.day4.findMASX
+import adventofcode2024.day4.findXMAS
+import adventofcode2024.day4.parseInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

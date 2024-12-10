@@ -1,4 +1,4 @@
-import adventofcode2023.day3.*
+import adventofcode2024.day3.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

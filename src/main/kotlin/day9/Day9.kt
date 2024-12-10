@@ -1,6 +1,6 @@
-package adventofcode2023.day9
+package adventofcode2024.day9
 
-import adventofcode2023.readInput
+import adventofcode2024.readInput
 import kotlin.time.measureTimedValue
 
 fun main() {

@@ -1,5 +1,5 @@
-import adventofcode2023.Point
-import adventofcode2023.day6.*
+import adventofcode2024.Point
+import adventofcode2024.day6.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

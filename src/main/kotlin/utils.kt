@@ -1,4 +1,4 @@
-package adventofcode2023
+package adventofcode2024
 
 import java.io.BufferedInputStream
 import java.io.BufferedReader

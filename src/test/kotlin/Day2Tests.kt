@@ -1,7 +1,7 @@
-import adventofcode2023.day2.*
-import adventofcode2023.day2.isSafe
-import adventofcode2023.day2.parseInput
-import adventofcode2023.day2.puzzle1
+import adventofcode2024.day2.*
+import adventofcode2024.day2.isSafe
+import adventofcode2024.day2.parseInput
+import adventofcode2024.day2.puzzle1
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
