@@ -1,4 +1,5 @@
 import adventofcode2024.day10.countTrailheads
+import adventofcode2024.day10.countTrails
 import adventofcode2024.day10.parseInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
@@ -8,9 +9,17 @@ import java.util.stream.Stream
 class Day10Tests {
 
     @ParameterizedTest
-    @MethodSource("countTestSource")
+    @MethodSource("countTrailheadsTestSource")
     fun testPuzzle1(testCase: Pair<String, Int>) {
         val result = countTrailheads(parseInput(testCase.first.lines()))
+
+        assertThat(result).isEqualTo(testCase.second)
+    }
+
+    @ParameterizedTest
+    @MethodSource("countTrailsTestSource")
+    fun testPuzzle2(testCase: Pair<String, Int>) {
+        val result = countTrails(parseInput(testCase.first.lines()))
 
         assertThat(result).isEqualTo(testCase.second)
     }
@@ -18,7 +27,7 @@ class Day10Tests {
     companion object {
 
         @JvmStatic
-        private fun countTestSource(): Stream<Pair<String, Int>> = Stream.of(
+        private fun countTrailheadsTestSource(): Stream<Pair<String, Int>> = Stream.of(
             """
                 ...0...
                 ...1...
@@ -56,7 +65,46 @@ class Day10Tests {
                 01329801
                 10456732
             """.trimIndent() to 36
+        )
 
+        @JvmStatic
+        fun countTrailsTestSource(): Stream<Pair<String, Int>> = Stream.of(
+            """
+                .....0.
+                ..4321.
+                ..5..2.
+                ..6543.
+                ..7..4.
+                ..8765.
+                ..9....
+            """.trimIndent() to 3,
+            """
+                ..90..9
+                ...1.98
+                ...2..7
+                6543456
+                765.987
+                876....
+                987....
+            """.trimIndent() to 13,
+            """
+                012345
+                123456
+                234567
+                345678
+                4.6789
+                56789.
+            """.trimIndent() to 227,
+            """
+                89010123
+                78121874
+                87430965
+                96549874
+                45678903
+                32019012
+                01329801
+                10456732
+            """.trimIndent() to 81
         )
     }
 }
