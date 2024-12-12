@@ -1,3 +1,4 @@
+import adventofcode2024.day11.countStones
 import adventofcode2024.day11.puzzle1
 import adventofcode2024.day11.transform
 import org.assertj.core.api.Assertions.assertThat
@@ -21,6 +22,14 @@ class Day11Tests {
     @MethodSource("testPuzzle1Source")
     fun testPuzzle1(testcase: Pair<String, List<Int>>) {
         val actual = puzzle1(testcase.first, testcase.second.first())
+
+        assertThat(testcase.second.component2()).isEqualTo(actual)
+    }
+
+    @ParameterizedTest
+    @MethodSource("testPuzzle1Source")
+    fun testCountStones(testcase: Pair<String, List<Int>>) {
+        val actual = countStones(testcase.first.split(" "), testcase.second.first())
 
         assertThat(testcase.second.component2()).isEqualTo(actual)
     }

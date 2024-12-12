@@ -10,8 +10,8 @@ fun main() {
         puzzle1(input.first(), 25)
     }
 
-    runPuzzle(1) {
-        puzzle1(input.first(), 75)
+    runPuzzle(2) {
+        countStones(parseInput(input), 75)
     }
 }
 
@@ -40,4 +40,24 @@ fun puzzle1(input: String, counter: Int): Int {
         sequence = newSequence
     }
     return sequence.size
+}
+
+fun countStones(
+    input: List<String>,
+    counter: Int,
+    cache: MutableMap<Int, MutableMap<String, Long>> = mutableMapOf()
+): Long {
+    return when(counter) {
+        0 -> input.size.toLong()
+        else -> {
+            val subCache = cache.getOrPut(counter) { mutableMapOf() }
+            input.sumOf { v ->
+                subCache.getOrPut(v) {
+                    transform(listOf(v)).sumOf { vv ->
+                        countStones(listOf(vv), counter - 1, cache)
+                    }
+                }
+            }
+        }
+    }
 }
