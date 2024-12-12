@@ -1,9 +1,11 @@
 package adventofcode2024
 
+import adventofcode2024.day10.puzzle1
 import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
+import kotlin.time.measureTimedValue
 
 fun openResourseAsStream(resourceName: String): InputStream =
     requireNotNull(object {}.javaClass.classLoader.getResourceAsStream(resourceName))
@@ -32,3 +34,11 @@ fun Point.pointsAround(): List<Point> =
         Point(line + 1, col)
     )
 
+
+fun <T> runPuzzle(number: Int, block: () -> T) {
+    println("Puzzle $number Started")
+    val (output, duration) = measureTimedValue {
+        block()
+    }
+    println("Puzzle $number output: $output. Done in ${duration.inWholeMilliseconds} ms" )
+}
