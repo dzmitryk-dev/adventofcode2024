@@ -1,9 +1,6 @@
 package adventofcode2024.day12
 
-import adventofcode2024.Point
-import adventofcode2024.pointsAround
-import adventofcode2024.readInput
-import adventofcode2024.runPuzzle
+import adventofcode2024.*
 
 fun main() {
 
@@ -72,5 +69,29 @@ fun calculateTotalPrice(field: List<CharArray>): Int {
         findRegions(field, symbol)
     }.sumOf { region ->
         calculatePrice(region)
+    }
+}
+
+private fun findSides(points: Set<Point>): Int {
+   TODO()
+}
+
+fun calculateBulkPrice(region: Set<Point>): Int {
+    val sides = findSides(region)
+    val square = region.size
+    return sides * square
+}
+
+fun calculateTotalBulkPrice(field: List<CharArray>): Int {
+    val symbols: Set<Char> = field.fold(mutableSetOf()) { acc, chars ->
+        acc.apply {
+            addAll(chars.toSet())
+        }
+    }
+
+    return symbols.flatMap { symbol ->
+        findRegions(field, symbol)
+    }.sumOf { region ->
+        calculateBulkPrice(region)
     }
 }
