@@ -1,6 +1,8 @@
 package adventofcode2024.day14
 
-import adventofcode2024.*
+import adventofcode2024.Point
+import adventofcode2024.readInput
+import adventofcode2024.runPuzzle
 
 fun main() {
     val input = readInput("day14.input")
@@ -10,8 +12,12 @@ fun main() {
         val fieldSize = Pair(101, 103)
         val seconds = 100
         val newRobots = simulate(robots, fieldSize, seconds)
-        visualize(newRobots, fieldSize)
+        println(visualize(newRobots, fieldSize))
         calculateSafetyFactor(newRobots, fieldSize)
+    }
+
+    runPuzzle(2) {
+        findMinimalSafetyFactor(input)
     }
 }
 
@@ -127,11 +133,25 @@ fun calculateSafetyFactor(robots: List<Robot>, fieldSize: Pair<Int, Int>): Int {
     return leftTop * rightTop * leftBottom * rightBottom
 }
 
-fun part1(input: List<String>): Int {
+fun findMinimalSafetyFactor(input: List<String>): Int {
     val robots = parseInput(input)
+
     val fieldSize = Pair(101, 103)
-    val seconds = 100
-    val result = simulate(robots, fieldSize, seconds)
-    visualize(result, fieldSize)
-    return calculateSafetyFactor(result, fieldSize)
+
+//    var currentRobots = simulate(robots, fieldSize, 5000)
+    var currentRobots = robots
+    repeat(10000) { iteration ->
+        currentRobots = simulate(currentRobots, fieldSize, 1)
+
+        val robotsSet = currentRobots.map { it.position }.toSet()
+
+        if(currentRobots.size == robotsSet.size) {
+            println("On iteration $iteration we found potential candidate")
+            println(visualize(currentRobots, fieldSize))
+            println()
+
+            return iteration
+        }
+    }
+    return 0
 }
