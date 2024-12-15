@@ -15,22 +15,22 @@ class Day13Tests {
             Machine(
                 a = 94 to 34,
                 b = 22 to 67,
-                prize = 8400 to 5400,
+                prize = 8400L to 5400L,
             ),
             Machine(
                 a = 26 to 66,
                 b = 67 to 21,
-                prize = 12748 to 12176,
+                prize = 12748L to 12176L,
             ),
             Machine(
                 a = 17 to 86,
                 b = 84 to 37,
-                prize = 7870 to 6450,
+                prize = 7870L to 6450L,
             ),
             Machine(
                 a = 69 to 23,
                 b = 27 to 71,
-                prize = 18641 to 10279,
+                prize = 18641L to 10279L,
             ),
         )
     }
@@ -75,22 +75,22 @@ class Day13Tests {
             Machine(
                 a = 94 to 34,
                 b = 22 to 67,
-                prize = 8400 to 5400,
-            ) to (80 to 40),
+                prize = 8400L to 5400L,
+            ) to (80L to 40L),
             Machine(
                 a = 26 to 66,
                 b = 67 to 21,
-                prize = 12748 to 12176,
+                prize = 12748L to 12176L,
             ) to null,
             Machine(
                 a = 17 to 86,
                 b = 84 to 37,
-                prize = 7870 to 6450,
-            ) to (38 to 86),
+                prize = 7870L to 6450L,
+            ) to (38L to 86L),
             Machine(
                 a = 69 to 23,
                 b = 27 to 71,
-                prize = 18641 to 10279,
+                prize = 18641L to 10279L,
             ) to null,
         )
 

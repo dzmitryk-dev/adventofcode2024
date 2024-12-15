@@ -9,12 +9,16 @@ fun main() {
     runPuzzle(1) {
         partOne(input)
     }
+
+    runPuzzle(2) {
+        partTwo(input)
+    }
 }
 
 data class Machine(
     val a: Pair<Int, Int>,
     val b: Pair<Int, Int>,
-    val prize: Pair<Int, Int>,
+    val prize: Pair<Long, Long>,
 )
 
 fun parseInput(input: List<String>): List<Machine> {
@@ -22,7 +26,7 @@ fun parseInput(input: List<String>): List<Machine> {
 
     var a: Pair<Int, Int>? = null
     var b: Pair<Int, Int>? = null
-    var prize: Pair<Int, Int>? = null
+    var prize: Pair<Long, Long>? = null
 
     for (line in input) {
         when {
@@ -43,7 +47,7 @@ fun parseInput(input: List<String>): List<Machine> {
             line.startsWith("Prize:") -> {
                 val coordinates = line.substringAfter("Prize:").trim()
                     .split(", ")
-                    .map { it.substringAfter("=").toInt() }
+                    .map { it.substringAfter("=").toLong() }
                 prize = coordinates[0] to coordinates[1]
             }
 
@@ -66,7 +70,7 @@ fun parseInput(input: List<String>): List<Machine> {
     return machines
 }
 
-fun findButtonPressCombination(machine: Machine): Pair<Int, Int>? {
+fun findButtonPressCombination(machine: Machine): Pair<Long, Long>? {
     val (ax, ay) = machine.a
     val (bx, by) = machine.b
     val (px, py) = machine.prize
@@ -83,9 +87,9 @@ fun findButtonPressCombination(machine: Machine): Pair<Int, Int>? {
     val x = (px * by - bx * py) / determinant
     val y = (ax * py - px * ay) / determinant
 
-    if (x !in (0..100) || y !in (0..100)) {
-        return null
-    }
+//    if (x !in (0..100) || y !in (0..100)) {
+//        return null
+//    }
     // Check that result is valid
     if (ax * x + bx * y != px || ay * x + by * y != py) {
         return null
@@ -94,10 +98,21 @@ fun findButtonPressCombination(machine: Machine): Pair<Int, Int>? {
     return Pair(x, y)
 }
 
-fun findTokensNumber(pair: Pair<Int, Int>): Int = pair.first * 3 + pair.second * 1
+fun findTokensNumber(pair: Pair<Long, Long>): Long = pair.first * 3 + pair.second * 1
 
-fun partOne(input: List<String>): Int {
+fun partOne(input: List<String>): Long {
     val machines = parseInput(input)
+
+    val result = machines
+        .mapNotNull { findButtonPressCombination(it) }
+        .sumOf { findTokensNumber(it) }
+
+    return result
+}
+
+fun partTwo(input: List<String>): Long {
+    val machines = parseInput(input)
+        .map { m -> m.copy(prize = m.prize.copy(m.prize.first + 10000000000000, m.prize.second + 10000000000000)) }
 
     val result = machines
         .mapNotNull { findButtonPressCombination(it) }
