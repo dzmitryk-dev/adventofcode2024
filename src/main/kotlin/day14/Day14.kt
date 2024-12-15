@@ -140,14 +140,26 @@ fun findMinimalSafetyFactor(input: List<String>): Int {
 
 //    var currentRobots = simulate(robots, fieldSize, 5000)
     var currentRobots = robots
-    repeat(10000) { iteration ->
+    repeat(9000) { iteration ->
+        println("iteration $iteration")
         currentRobots = simulate(currentRobots, fieldSize, 1)
+
+//        val lll = visualize(currentRobots, fieldSize).contains("1111111111111111111111111111111")
+//        if (lll) {
+//            println("On iteration $iteration we found potential candidate")
+//            println(visualize(currentRobots, fieldSize))
+//            println()
+//        }
 
         val robotsSet = currentRobots.map { it.position }.toSet()
 
         if(currentRobots.size == robotsSet.size) {
             println("On iteration $iteration we found potential candidate")
             println(visualize(currentRobots, fieldSize))
+            println()
+
+            val newRobots = simulate(robots, fieldSize, iteration + 1)
+            println(visualize(newRobots, fieldSize))
             println()
 
             return iteration
