@@ -9,6 +9,9 @@ fun main() {
     runPuzzle(1) {
         part1(input)
     }
+    runPuzzle(2) {
+        part2(input)
+    }
 }
 
 data class Scene(
@@ -17,7 +20,7 @@ data class Scene(
     val robot: Point,
 ) {
     enum class Item {
-        WALL, BOX
+        WALL, BOX, BOX_LARGE_LEFT, BOX_LARGE_RIGHT
     }
 }
 
@@ -36,7 +39,13 @@ fun parseInput(input: List<String>): Pair<Scene, List<Command>> {
         parseScene(sceneInput)
     }
 
-    val commands = input.subList(separator + 1, input.size).let { commandsInput ->
+    val commands = parseCommands(input, separator)
+
+    return scene to commands
+}
+
+private fun parseCommands(input: List<String>, separator: Int): List<Command> {
+    return input.subList(separator + 1, input.size).let { commandsInput ->
         commandsInput.joinToString("").map {
             Command(
                 when (it) {
@@ -49,8 +58,6 @@ fun parseInput(input: List<String>): Pair<Scene, List<Command>> {
             )
         }
     }
-
-    return scene to commands
 }
 
 fun parseScene(sceneInput: List<String>): Scene {
@@ -66,6 +73,8 @@ fun parseScene(sceneInput: List<String>): Scene {
                     '@' -> robot = Point(line, col)
                     '#' -> put(Point(line, col), Scene.Item.WALL)
                     'O' -> put(Point(line, col), Scene.Item.BOX)
+                    '['-> put(Point(line, col), Scene.Item.BOX_LARGE_LEFT)
+                    ']'-> put(Point(line, col), Scene.Item.BOX_LARGE_RIGHT)
                 }
             }
         }
@@ -83,6 +92,8 @@ fun visualize(scene: Scene): String {
         field[line][col]  = when (item) {
             Scene.Item.WALL -> '#'
             Scene.Item.BOX ->  'O'
+            Scene.Item.BOX_LARGE_LEFT -> '['
+            Scene.Item.BOX_LARGE_RIGHT -> ']'
         }
     }
     scene.robot.let { (line, col) ->
@@ -100,20 +111,68 @@ fun executeCommand(scene: Scene, command: Command): Scene {
         Command.Direction.RIGHT -> Point(line, col + 1)
     }
 
+    fun moveBox(points: Set<Point>, items: Map<Point, Scene.Item>): Map<Point, Scene.Item>? {
+        if (points.isEmpty()) return items
+
+        val nextPoints = mutableSetOf<Point>()
+
+        points.forEach { p ->
+            val nextPoint = p.nextPoint(command.direction)
+            when(items[nextPoint]) {
+                Scene.Item.WALL -> return@moveBox null
+                Scene.Item.BOX -> nextPoints.add(nextPoint)
+                Scene.Item.BOX_LARGE_LEFT -> {
+                    nextPoints.add(nextPoint)
+                    if (command.direction in arrayOf(Command.Direction.UP, Command.Direction.DOWN)) {
+                        nextPoints.add(Point(nextPoint.line, nextPoint.col + 1))
+                    }
+                }
+                Scene.Item.BOX_LARGE_RIGHT -> {
+                    if (command.direction in arrayOf(Command.Direction.UP, Command.Direction.DOWN)) {
+                        nextPoints.add(Point(nextPoint.line, nextPoint.col - 1))
+                    }
+                    nextPoints.add(nextPoint)
+                }
+                null -> { /* DO NOTHING */ }
+            }
+        }
+
+        val movedItems = moveBox(nextPoints, items)
+        return movedItems?.toMutableMap()?.apply {
+            points.forEach { p ->
+                val nextP = p.nextPoint(command.direction)
+                this[nextP] = items[p]!!
+                this.remove(p)
+            }
+        }
+    }
+
     val newRobot = scene.robot.nextPoint(command.direction)
 
     return when (scene.items[newRobot]) {
         Scene.Item.WALL -> scene
-        Scene.Item.BOX -> {
-            fun moveBox(p: Point, items: Map<Point, Scene.Item>): Map<Point, Scene.Item>? {
-                val nextPoint = p.nextPoint(command.direction)
-                return when (items[nextPoint]) {
-                    Scene.Item.WALL -> null
-                    Scene.Item.BOX -> moveBox(nextPoint, items)
-                    null -> items
-                }?.let { it + (nextPoint to Scene.Item.BOX) - p }
+        Scene.Item.BOX_LARGE_LEFT -> {
+            val set = if (command.direction in arrayOf(Command.Direction.UP, Command.Direction.DOWN)) {
+                setOf(newRobot, newRobot.copy(second = newRobot.col + 1))
+            } else {
+                setOf(newRobot)
             }
-            moveBox(newRobot, scene.items)?.let { newItems ->
+            moveBox(set, scene.items)?.let { newItems ->
+                scene.copy(robot = newRobot, items = newItems)
+            } ?: scene
+        }
+        Scene.Item.BOX_LARGE_RIGHT -> {
+            val set = if (command.direction in arrayOf(Command.Direction.UP, Command.Direction.DOWN)) {
+                setOf(newRobot, newRobot.copy(second = newRobot.col - 1))
+            } else {
+                setOf(newRobot)
+            }
+            moveBox(set, scene.items)?.let { newItems ->
+                scene.copy(robot = newRobot, items = newItems)
+            } ?: scene
+        }
+        Scene.Item.BOX -> {
+            moveBox(setOf(newRobot), scene.items)?.let { newItems ->
                 scene.copy(robot = newRobot, items = newItems)
             } ?: scene
         }
@@ -128,7 +187,7 @@ fun executeCommands(scene: Scene, commands: List<Command>): Scene {
 }
 
 fun calculateGPS(scene: Scene): Int {
-    return scene.items.filter { it.value == Scene.Item.BOX }
+    return scene.items.filter { it.value in arrayOf(Scene.Item.BOX, Scene.Item.BOX_LARGE_LEFT) }
         .keys.sumOf { (line, col) ->
             line * 100 + col
         }
@@ -136,6 +195,39 @@ fun calculateGPS(scene: Scene): Int {
 
 fun part1(input: List<String>): Int {
     val (scene, commands) = parseInput(input)
+    val finalScene = executeCommands(scene, commands)
+    return calculateGPS(finalScene)
+}
+
+fun extendScene(input: List<String>): List<String> {
+    return input.fold(mutableListOf()) { acc, line ->
+        val newLine = buildString {
+            line.forEach { c ->
+                when (c) {
+                    '@' -> append("@.")
+                    'O' -> append("[]")
+                    '#' -> append("##")
+                    else -> append("..")
+                }
+            }
+        }
+        acc.add(newLine)
+        acc
+    }
+}
+
+fun parseInput2(input: List<String>): Pair<Scene, List<Command>> {
+    val separator = input.indexOfFirst { it.isEmpty() }
+
+    val scene = parseScene(extendScene(input.subList(0, separator)))
+
+    val commands = parseCommands(input, separator)
+
+    return scene to commands
+}
+
+fun part2(input: List<String>): Int {
+    val (scene, commands) = parseInput2(input)
     val finalScene = executeCommands(scene, commands)
     return calculateGPS(finalScene)
 }

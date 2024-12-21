@@ -24,7 +24,7 @@ class Day15Test {
             }
         }.joinToString("")
 
-        assertThat(renderedCommands).isEqualTo(testData.third.replace("\n",""))
+        assertThat(renderedCommands).isEqualTo(testData.third.replace("\n", ""))
     }
 
     @ParameterizedTest
@@ -39,8 +39,8 @@ class Day15Test {
         assertThat(renderedScene)
             .overridingErrorMessage {
                 "Input:\n ${input.joinToString { "$it\n" }}\n." +
-                "Expected:\n $expectedOutput\n." +
-                "Actual:\n $renderedScene"
+                        "Expected:\n $expectedOutput\n." +
+                        "Actual:\n $renderedScene"
             }
             .isEqualTo(expectedOutput)
     }
@@ -57,8 +57,8 @@ class Day15Test {
         assertThat(renderedScene)
             .overridingErrorMessage {
                 "Input:\n $input\n." +
-                "Expected:\n $expectedOutput\n." +
-                "Actual:\n $renderedScene"
+                        "Expected:\n $expectedOutput\n." +
+                        "Actual:\n $renderedScene"
             }
             .isEqualTo(expectedOutput)
 
@@ -76,6 +76,62 @@ class Day15Test {
         val result = calculateGPS(scene)
 
         assertThat(result).isEqualTo(expectedOutput)
+    }
+
+    @ParameterizedTest
+    @MethodSource("extendTestSource")
+    fun testExtend(testData: Pair<String, String>) {
+        val (input, expectedOutput) = testData
+
+        val extendedSceneInput = extendScene(input.lines())
+
+        val scene = parseScene(extendedSceneInput)
+        val renderedScene = visualize(scene)
+
+        assertThat(renderedScene)
+            .overridingErrorMessage {
+                "Input:\n $input\n." +
+                        "Expected:\n $expectedOutput\n." +
+                        "Actual:\n $renderedScene"
+            }
+            .isEqualTo(expectedOutput)
+    }
+
+    @ParameterizedTest
+    @MethodSource("part2MoveTestSource")
+    fun testPart2Move(testData: Pair<String, String>) {
+        val (input, expectedOutput) = testData
+        val (scene, commands) = parseInput2(input.lines())
+
+        val updatedScene = executeCommands(scene, commands)
+        val renderedScene = visualize(updatedScene)
+
+        assertThat(renderedScene)
+            .overridingErrorMessage {
+                "Input:\n $input\n." +
+                        "Expected:\n $expectedOutput\n." +
+                        "Actual:\n $renderedScene"
+            }
+            .isEqualTo(expectedOutput)
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCommandExecutionSource2")
+    fun testExecuteCommand2(testData: Triple<List<String>, Command.Direction, String>) {
+        val (input, direction, expectedOutput) = testData
+        val scene = parseScene(input)
+
+        val updatedScene = executeCommand(scene, Command(direction))
+        val renderedScene = visualize(updatedScene)
+
+        assertThat(renderedScene)
+            .overridingErrorMessage {
+                "Input:\n ${input.joinToString { "$it\n" }}\n." +
+                        "Expected:\n $expectedOutput\n." +
+                        "Actual:\n $renderedScene"
+            }
+            .isEqualTo(expectedOutput)
+
     }
 
     companion object {
@@ -333,13 +389,13 @@ class Day15Test {
                     "v"
                 ),
                 "########\n" +
-                "#....OO#\n" +
-                "##.....#\n" +
-                "#.....O#\n" +
-                "#.#.O@.#\n" +
-                "#...O..#\n" +
-                "#...O..#\n" +
-                "########"
+                        "#....OO#\n" +
+                        "##.....#\n" +
+                        "#.....O#\n" +
+                        "#.#.O@.#\n" +
+                        "#...O..#\n" +
+                        "#...O..#\n" +
+                        "########"
             ),
             Pair(
                 listOf(
@@ -355,13 +411,13 @@ class Day15Test {
                     "<"
                 ),
                 "########\n" +
-                "#....OO#\n" +
-                "##.....#\n" +
-                "#.....O#\n" +
-                "#.#O@..#\n" +
-                "#...O..#\n" +
-                "#...O..#\n" +
-                "########"
+                        "#....OO#\n" +
+                        "##.....#\n" +
+                        "#.....O#\n" +
+                        "#.#O@..#\n" +
+                        "#...O..#\n" +
+                        "#...O..#\n" +
+                        "########"
 
             )
         )
@@ -422,5 +478,283 @@ class Day15Test {
                 ##########
             """.trimIndent() to 10092
         )
+
+        @JvmStatic
+        fun extendTestSource() = Stream.of(
+            """
+                #######
+                #...#.#
+                #.....#
+                #..OO@#
+                #..O..#
+                #.....#
+                #######
+            """.trimIndent() to
+                    """
+                ##############
+                ##......##..##
+                ##..........##
+                ##....[][]@.##
+                ##....[]....##
+                ##..........##
+                ##############
+            """.trimIndent(),
+            """
+                ##########
+                #..O..O.O#
+                #......O.#
+                #.OO..O.O#
+                #..O@..O.#
+                #O#..O...#
+                #O..O..O.#
+                #.OO.O.OO#
+                #....O...#
+                ##########
+            """.trimIndent() to
+                    """
+                ####################
+                ##....[]....[]..[]##
+                ##............[]..##
+                ##..[][]....[]..[]##
+                ##....[]@.....[]..##
+                ##[]##....[]......##
+                ##[]....[]....[]..##
+                ##..[][]..[]..[][]##
+                ##........[]......##
+                ####################
+            """.trimIndent()
+        )
+
+        @JvmStatic
+        fun part2MoveTestSource() = Stream.of(
+            """
+               #######
+               #...#.#
+               #.....#
+               #..OO@#
+               #..O..#
+               #.....#
+               #######
+
+               <vv<<^^<<^^
+            """.trimIndent() to
+                    """
+                ##############
+                ##...[].##..##
+                ##...@.[]...##
+                ##....[]....##
+                ##..........##
+                ##..........##
+                ##############
+            """.trimIndent(),
+            testInputLarge to
+                    """
+                ####################
+                ##[].......[].[][]##
+                ##[]...........[].##
+                ##[]........[][][]##
+                ##[]......[]....[]##
+                ##..##......[]....##
+                ##..[]............##
+                ##..@......[].[][]##
+                ##......[][]..[]..##
+                ####################
+            """.trimIndent()
+        )
+
+        @JvmStatic
+        fun testCommandExecutionSource2() = Stream.of(
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##..........##",
+                    "##....[][]@.##",
+                    "##....[]....##",
+                    "##..........##",
+                    "##############",
+                ),
+                Command.Direction.LEFT,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##..........##\n" +
+                        "##...[][]@..##\n" +
+                        "##....[]....##\n" +
+                        "##..........##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##..........##",
+                    "##...[][]@..##",
+                    "##....[]....##",
+                    "##..........##",
+                    "##############",
+                ),
+                Command.Direction.DOWN,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##..........##\n" +
+                        "##...[][]...##\n" +
+                        "##....[].@..##\n" +
+                        "##..........##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##..........##",
+                    "##...[][]...##",
+                    "##....[].@..##",
+                    "##..........##",
+                    "##############",
+                ),
+                Command.Direction.DOWN,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##..........##\n" +
+                        "##...[][]...##\n" +
+                        "##....[]....##\n" +
+                        "##.......@..##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##..........##",
+                    "##...[][]...##",
+                    "##....[]....##",
+                    "##.......@..##",
+                    "##############",
+                ),
+                Command.Direction.LEFT,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##..........##\n" +
+                        "##...[][]...##\n" +
+                        "##....[]....##\n" +
+                        "##......@...##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##..........##",
+                    "##...[][]...##",
+                    "##....[]....##",
+                    "##......@...##",
+                    "##############",
+                ),
+                Command.Direction.LEFT,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##..........##\n" +
+                        "##...[][]...##\n" +
+                        "##....[]....##\n" +
+                        "##.....@....##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##..........##",
+                    "##...[][]...##",
+                    "##....[]....##",
+                    "##.....@....##",
+                    "##############",
+                ),
+                Command.Direction.UP,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##...[][]...##\n" +
+                        "##....[]....##\n" +
+                        "##.....@....##\n" +
+                        "##..........##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##...[][]...##",
+                    "##....[]....##",
+                    "##.....@....##",
+                    "##..........##",
+                    "##############",
+                ),
+                Command.Direction.LEFT,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##...[][]...##\n" +
+                        "##....[]....##\n" +
+                        "##....@.....##\n" +
+                        "##..........##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##...[][]...##",
+                    "##....[]....##",
+                    "##....@.....##",
+                    "##..........##",
+                    "##############",
+                ),
+                Command.Direction.UP,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##...[][]...##\n" +
+                        "##....[]....##\n" +
+                        "##....@.....##\n" +
+                        "##..........##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##...[][]...##",
+                    "##....[]....##",
+                    "##....@.....##",
+                    "##..........##",
+                    "##############",
+                ),
+                Command.Direction.LEFT,
+                "##############\n" +
+                        "##......##..##\n" +
+                        "##...[][]...##\n" +
+                        "##....[]....##\n" +
+                        "##...@......##\n" +
+                        "##..........##\n" +
+                        "##############"
+            ),
+            Triple(
+                listOf(
+                    "##############",
+                    "##......##..##",
+                    "##...[][]...##",
+                    "##...@[]....##",
+                    "##..........##",
+                    "##..........##",
+                    "##############",
+                ),
+                Command.Direction.UP,
+                "##############\n" +
+                        "##...[].##..##\n" +
+                        "##...@.[]...##\n" +
+                        "##....[]....##\n" +
+                        "##..........##\n" +
+                        "##..........##\n" +
+                        "##############"
+            )
+        )
+
     }
 }
